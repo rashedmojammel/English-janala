@@ -11,7 +11,20 @@ const loadLevelWord = (id) =>
 
     fetch(url)
     .then((res) => res.json())
-    .then((data) => displayLevelWord(data.data));
+    .then((data) => {
+        removeActive();
+        
+        const clickbtn = document.getElementById(`lesson-btn-${id}`)
+        console.log(clickbtn);
+        clickbtn.classList.add("active");
+        displayLevelWord(data.data)});
+}
+
+const removeActive = () =>
+{
+    const rembtn = document.querySelectorAll(".lesson-btn");
+    rembtn.forEach((btn) => btn.classList.remove("active"));
+    console.log(rembtn);
 }
 const displayLevelWord = (words) =>
 {
@@ -47,9 +60,7 @@ const displayLevelWord = (words) =>
       word.pronunciation ? word.pronunciation : "Pronounciation পাওয়া  যায়নি"
     }"</div> 
         <div class="flex justify-between items-center">
-          <button onclick="loadWordDetail(${
-            word.id
-          })" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
+          <button onclick="my_modal_5.showModal()" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
             <i class="fa-solid fa-circle-info"></i>
           </button>
           <button onclick="pronounceWord('${
@@ -75,7 +86,7 @@ const displayLessons = (lessons) =>
     {
         const btndiv =  document.createElement("div");
         btndiv.innerHTML = `
-         <button id="lesson-btn-${lesson.level_no}" onclick="loadLevelWord(${lesson.level_no})"  class="btn btn-outline btn-primary"
+         <button id="lesson-btn-${lesson.level_no}" onclick="loadLevelWord(${lesson.level_no})"  class="btn btn-outline btn-primary lesson-btn"
                 ><i class="fa-solid fa-book-open"></i>Lesson - ${lesson.level_no}</button>
         
         `
