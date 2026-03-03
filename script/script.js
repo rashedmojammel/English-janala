@@ -1,3 +1,13 @@
+const createElements = (arr) => {
+  if (!arr || arr.length === 0) {
+    // no synonyms at all
+    return `<span class="btn">No Synonyms Found</span>`;
+  }
+
+  // create one button per synonym
+  const htmlElements = arr.map(el => `<span class="btn">${el}</span>`).join(" ");
+  return htmlElements;
+};
 const loadData = () =>{
    fetch("https://openapi.programming-hero.com/api/levels/all")
    .then((res) => res.json())
@@ -25,6 +35,41 @@ const removeActive = () =>
     const rembtn = document.querySelectorAll(".lesson-btn");
     rembtn.forEach((btn) => btn.classList.remove("active"));
     console.log(rembtn);
+}
+
+const loadWordDetails = async(id) =>
+{
+  const url = `https://openapi.programming-hero.com/api/word/${id}`
+  console.log(url);
+  const res = await fetch(url);
+  const details = await res.json();
+  displayWordDetails(details.data);
+
+}
+
+const displayWordDetails = (word) =>
+{
+  console.log(word);
+  const wordDetails = document.getElementById("details-container");
+  wordDetails.innerHTML = `
+  <div>
+        <h1 class="font-bold text-2xl">${word.word} (<i class="fa-solid fa-microphone"></i>:${word.pronunciation})</h1>
+      </div>
+      <div>
+        <h1 class="font-bold">Meaning</h1>
+        <p>${word.meaning}</p>
+      </div>
+      <div>
+        <h1 class="font-bold">Example</h1>
+        <P>${word.sentence}</P>
+      </div>
+      <div>
+        <h1 class="font-bold">সমার্থক শব্দ গুলো</h1>
+        <div class="">${createElements(word.synonyms)}</div>
+      </div>
+      <button class="btn btn-primary">Complete Learning</button>`;
+  document.getElementById("word_modal").showModal();
+
 }
 const displayLevelWord = (words) =>
 {
@@ -60,7 +105,7 @@ const displayLevelWord = (words) =>
       word.pronunciation ? word.pronunciation : "Pronounciation পাওয়া  যায়নি"
     }"</div> 
         <div class="flex justify-between items-center">
-          <button onclick="my_modal_5.showModal()" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
+          <button onclick="loadWordDetails(${word.id})" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
             <i class="fa-solid fa-circle-info"></i>
           </button>
           <button onclick="pronounceWord('${
