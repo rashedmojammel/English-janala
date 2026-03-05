@@ -119,11 +119,11 @@ const displayLevelWord = (words) =>
          <div
         class="bg-white rounded-xl shadow-sm text-center py-10 px-5 space-y-4"
       >
-        <h2 class="font-bold text-2xl">${
+        <h2 class="font-bold text-xl md:text-2xl">${
           word.word ? word.word : "শব্দ পাওয়া যায়নি"
         }</h2>
         <p class="font-semibold">Meaning /Pronounciation</p>
-        <div class="text-2xl font-medium font-bangla">"${
+        <div class="text-xl md:text-2xl font-medium font-bangla">"${
           word.meaning ? word.meaning : "অর্থ পাওয়া যায়নি"
         } / ${
       word.pronunciation ? word.pronunciation : "Pronounciation পাওয়া  যায়নি"
@@ -143,6 +143,26 @@ const displayLevelWord = (words) =>
     }
     manageSpinner(false);
 }
+
+ document.getElementById("btn-search").addEventListener("click" ,()=>
+{
+  removeActive();
+  const input = document.getElementById("word-search");
+  const searchValue = input.value.trim().toLowerCase();
+  console.log(searchValue);
+
+  fetch("https://openapi.programming-hero.com/api/words/all")
+  .then((res)=>res.json())
+  .then((data)=>{
+    const allwords = data.data;
+    console.log(allwords);
+    const filterwords = allwords.filter(word => word.word.toLowerCase().includes(searchValue));
+   // console.log(filterwords);
+   displayLevelWord(filterwords);
+  })
+  
+
+})
 
 
 const displayLessons = (lessons) =>
